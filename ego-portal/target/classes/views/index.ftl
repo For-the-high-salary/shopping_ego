@@ -52,13 +52,23 @@
 </div>
 <div class="my_slider">
     <#list shop as s>
-        <div class="my_slide current">
-            <h1>${s.name}</h1>
-            <p>${s.remark}</p>
-            <div class="slide_img">
-                <img src="${s.image}" width="60%">
+        <#if s_index<4>
+            <div class="my_slide">
+                <h1>${s.name}</h1>
+                <p>${s.remark}</p>
+                <div class="slide_img">
+                    <img src="${s.image}" width="60%">
+                </div>
             </div>
-        </div>
+            <#else >
+                <div class="my_slide current">
+                    <h1>${s.name}</h1>
+                    <p>${s.remark}</p>
+                    <div class="slide_img">
+                        <img src="${s.image}" width="60%">
+                    </div>
+                </div>
+        </#if>
     </#list>
 
     <div class="left_border">
