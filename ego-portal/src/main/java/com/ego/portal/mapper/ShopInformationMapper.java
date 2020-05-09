@@ -33,4 +33,6 @@ public interface ShopInformationMapper {
 
     //首页-轮播图的商品展示-根据商品数量升序前5条数据
     List<ShopInformation> select();
+    //首页-精品的商品展示-根据商品数量升序第5到10条数据
+    List<ShopInformation> selectbySales();
 }

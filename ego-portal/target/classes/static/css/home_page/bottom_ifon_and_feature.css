@@ -18,16 +18,20 @@
 
 .featured_products .product {
     position: relative;
-    width: 15%;
-    height: 75%;
+    width: 17%;
+    height: 350px;
     float: left;
-    margin-left: 3%;
+    margin-left: 4%;
     margin-right: 2%;
     display: block;
     text-align: center;
     line-height: 2em;
 }
 
+.featured_products .product img{
+    width: 100%;
+    height: 48%;
+}
 .featured_products .product .product_name {
     color: rgba(0,0,0,0.62);
     font-size: 1em;
@@ -61,7 +65,7 @@
     width: 90%;
     display: inline-block;
     position: absolute;
-    top: 1200px;
+    top: 1216px;
     left: 5%;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
@@ -87,7 +91,7 @@
 footer {
     width: 88%;
     position: absolute;
-    left: 6%;
+    left: 4%;
     top: 1450px;
     background-color: slateblue;
     box-shadow: 4px 2px 10px #888888;

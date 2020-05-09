@@ -22,7 +22,7 @@
 </header>
 <div class="short_nav_show">
     <ul>
-        <li><a href="#">首页</a></li>
+        <li><a href="${ctx}/index">首页</a></li>
         <li><a href="page/mall_page.html">商城</a></li>
         <li><a href="page/">求购商场</a></li>
         <li><a href="javascript:void(0)">反馈与意见</a></li>
@@ -31,7 +31,7 @@
 </div>
 <nav class="my_nav">
     <ul>
-        <li><a href="#">首页</a></li>
+        <li><a href="${ctx}/index">首页</a></li>
         <li><a href="page/mall_page.html">商城</a></li>
         <li><a href="page/">求购商城</a></li>
         <li><a href="javascript:void(0)">反馈与意见</a></li>
@@ -50,14 +50,16 @@
         <li><a class="login_out" href="/wsk/logout.do">退出</a></li>
     </ul>
 </div>
+<#--轮播图-->
 <div class="my_slider">
+    <#--商品-->
     <#list shop as s>
         <#if s_index<4>
             <div class="my_slide">
                 <h1>${s.name}</h1>
                 <p>${s.remark}</p>
                 <div class="slide_img">
-                    <img src="${s.image}" width="60%">
+                    <img src="${s.image}" style="width:400px;height: 270px">
                 </div>
             </div>
             <#else >
@@ -65,12 +67,12 @@
                     <h1>${s.name}</h1>
                     <p>${s.remark}</p>
                     <div class="slide_img">
-                        <img src="${s.image}" width="60%">
+                        <img src="${s.image}" style="width:400px;height: 270px">
                     </div>
                 </div>
         </#if>
     </#list>
-
+    <#--箭头-->
     <div class="left_border">
         <span class="left_turn"></span>
     </div>
@@ -78,39 +80,32 @@
         <span class="right_turn"></span>
     </div>
 </div>
-<div class="featured_products" style="height: 500px">
+
+<div class="featured_products" style="height: 520px">
     <h2>精选商品</h2>
-    <div class="product">
-        <img src="img/home/feature_prodects/cont1.jpg" width="100%">
-        <span class="product_name">Big block Lether Bag</span>
-        <span class="product_cost">$350.00</span><br><br>
-        <span class="buy product_1">加入购物车</span>
-    </div>
-    <div class="product">
-        <img src="img/home/feature_prodects/cont2.jpg" width="100%">
-        <span class="product_name">Big block Lether Bag</span>
-        <span class="product_cost">$350.00</span><br><br>
-        <span class="buy product_2">加入购物车</span>
-    </div>
-    <div class="product">
-        <img src="img/home/feature_prodects/cont4.jpg" width="100%">
-        <span class="product_name">Big block Lether Bag</span>
-        <span class="product_cost">$350.00</span><br><br>
-        <span class="buy product_3">加入购物车</span>
-    </div>
-    <div class="product">
-        <img src="img/home/feature_prodects/cont4.jpg" width="100%">
-        <span class="product_name">Big block Lether Bag<br></span>
-        <span class="product_cost">$350.00</span><br><br>
-        <span class="buy product_4">加入购物车</span>
-    </div>
-    <div class="product">
-        <img src="img/home/feature_prodects/cont1.jpg" width="100%">
-        <span class="product_name">Big block Lether Bag</span>
-        <span class="product_cost">$350.00</span><br><br>
-        <span class="buy product_5">加入购物车</span>
+    <#--<#list shops as s>
+        <div class="product">
+            <img src="${s.image}" width="100%" height="45%">
+            <span class="product_name">${s.name}</span><br>
+            <span class="product_cost">￥${s.price}</span><br><br>
+            <span class="buy product_1">加入购物车</span>
+        </div>
+    </#list>-->
+    <div id="goodsContent" style="height: 350px"></div>
+    <div class="pagination_div" style="margin-left: 37%">
+        <#--<a class="pagination_lt">&lt;</a>
+        <ul>
+            <!--new&ndash;&gt;
+            <li class="current_page"><a>1</a></li>
+            <li><a>2</a></li>
+            <li ><a>3</a></li>
+            <li><a>4</a></li>
+            <li><a>5</a></li>
+        </ul>
+        <a class="pagination_gt">&gt;</a>-->
     </div>
 </div>
+
 <div class="home_page_info">
     <div class="bottom_info">
         <h2>
@@ -136,7 +131,105 @@
     </div>
 </div>
 <footer>
-    <p>Copyright © 2017-2200.Company name All rights reserved.<a href="/"></a></p>
+    <p style="line-height: 50%">Copyright © 2017-2200.Company name All rights reserved.<a href="/"></a></p>
 </footer>
 </body>
+
+
+<!-- 编写商品模板 -->
+<script type="template" id="goodsTemplate">
+    {{ for(var i = 0; i < it.length; i++){ }}
+        <div class="product">
+            <img src="{{=it[i].image}}">
+            <span class="product_name">{{=it[i].name}}</span><br>
+            <span class="product_cost">￥{{=it[i].price}}</span><br><br>
+            <span class="buy product_1">加入购物车</span>
+        </div>
+    {{ } }}
+</script>
+
+<!-- 编写分页模板 -->
+<script type="template" id="pageTemplate">
+
+    {{ if(it.hasPreviousPage){ }}<#--hasPreviousPage当前页-->
+    <a class="pagination_lt" href="javascript:ajax_get_table('{{=it.prePage}}');" style="text-decoration: none"><</a>
+    {{ } }}
+
+    {{ for(var i = 1; i <= it.navigatepageNums.length; i++){ }}<#--navigatepageNums显示页数-->
+    <ul>
+        <li {{ if(i == it.pageNum){ }} class="current_page" {{ } }}>
+            <a href="javascript:ajax_get_table('{{=i}}');" style="text-decoration: none">{{=i}}</a>
+        </li>
+    </ul>
+    {{ } }}
+
+    {{ if(it.hasNextPage){ }}
+        <a class="pagination_gt" href="javascript:ajax_get_table('{{=it.nextPage}}');" style="text-decoration: none">></a>
+    {{ } }}
+</script>
+<!-- 编写分页模板 -->
+<#--<script type="template" id="pageTemplate">
+
+    {{ if(it.hasPreviousPage){ }}
+        <a class="pagination_lt" href="javascript:ajax_get_table('{{=it.prePage}}');" style="text-decoration: none"><</a>
+    {{ } }}
+
+    {{ for(var i = 1; i <= it.pages; i++){ }}
+        &lt;#&ndash;<li class="current_page {{ if(i == it.pageNum){ }}active{{ } }}">
+            <a href="javascript:ajax_get_table('{{=i}}');">{{=i}}</a>
+        </li>&ndash;&gt;
+        <ul>
+            <li {{ if(i == it.pageNum){ }} class="current_page" {{ } }}>
+                <a href="javascript:ajax_get_table('{{=i}}');" style="text-decoration: none">{{=i}}</a>
+            </li>
+        </ul>
+    {{ } }}
+
+    {{ if(it.hasNextPage){ }}
+        <a class="pagination_gt" href="javascript:ajax_get_table('{{=it.nextPage}}');" style="text-decoration: none">></a>
+    {{ } }}
+</script>-->
+
+<script>
+    $(document).ready(function () {
+        // ajax 加载商品列表
+        ajax_get_table(1);
+
+    });
+
+    //ajax抓取页面 page为当前第几页
+    function ajax_get_table(page) {
+        $.ajax({
+            url: "${ctx}/listForPage",
+            type: "POST",
+            data: {
+                pageNum: page,
+                pageSize: 4
+            },
+            dataType: "JSON",
+            success: function (result) {
+                if (200 == result.code) {
+                    if (result.pageInfo.list.length > 0) {
+                        console.log(result.pageInfo.list);
+                        //获取商品列表模板
+                        var goodsTemp = doT.template($("#goodsTemplate").text());
+                        //填充数据
+                        $("#goodsContent").html(goodsTemp(result.pageInfo.list));
+                        //获取分页模板
+                        var pageTemp = doT.template($("#pageTemplate").text());
+                        //填充数据
+                        $(".pagination_div").html(pageTemp(result.pageInfo));
+                    } else {
+                        layer.msg("该分类或品牌暂无商品信息！");
+                    }
+                } else {
+                    layer.msg("该分类或品牌暂无商品信息！");
+                }
+            },
+            error: function (result) {
+                console.log(result)
+            }
+        });
+    }
+</script>
 </html>

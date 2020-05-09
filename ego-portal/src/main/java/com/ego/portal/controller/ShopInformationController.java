@@ -1,6 +1,7 @@
 package com.ego.portal.controller;
 
 import com.ego.common.result.BaseResult;
+import com.ego.common.result.EgoPageInfo;
 import com.ego.portal.pojo.ShopInformation;
 import com.ego.portal.service.ShopInformationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,15 @@ public class ShopInformationController {
     public String shop(Model model){
         //首页-轮播图的商品展示-根据商品数量升序前5条数据
         model.addAttribute("shop",shopInformationService.shop());
+        //首页-精品的商品展示-根据商品数量升序第5到10条数据
+        //model.addAttribute("shops",shopInformationService.shops());
         return "index";
     }
 
+    //精品商品分页查询
+    @RequestMapping("listForPage")
+    @ResponseBody
+    public BaseResult selectGoodsListByPage(Integer pageNum,Integer pageSize){
+        return shopInformationService.selectGoodsListByPage(pageNum,pageSize);
+    }
 }

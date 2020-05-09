@@ -220,9 +220,15 @@
   </select>
   <!--首页-轮播图的商品展示-根据商品数量升序前5条数据-->
   <select id="select" resultType="com.ego.portal.pojo.ShopInformation">
-    select * from shopinformation
+    select <include refid="Base_Column_List"/> from shopinformation
     order by sales desc
     limit 0,5;
+  </select>
+  <!--首页-精品的商品展示-根据商品数量升序第5到10条数据-->
+  <select id="selectbySales" resultType="com.ego.portal.pojo.ShopInformation">
+    select <include refid="Base_Column_List"/> from shopinformation
+    order by sales desc
+    limit 5,5;
   </select>
 
   <update id="updateByExampleSelective" parameterType="map">
