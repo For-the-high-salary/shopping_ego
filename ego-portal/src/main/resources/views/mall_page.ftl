@@ -15,21 +15,10 @@
     <!-- 引入 doT.js -->
     <script type="text/javascript" src="${ctx}/js/doT.min.js"></script>
     <script src="${ctx}/js/layer/layer-min.js"></script>
+
 </head>
 <body>
-<header>
-    <span class="short_nav"></span>
-    <div class="home_icon">
-        <a href="../index.html" style="text-decoration: none;color: white">C2C</a>
-    </div>
-    <input type="text" placeholder="Search" name="search" class="nav_search_input">
-    <span class="search_icon"></span>
-    <span class="user_icon"></span>
-    <span class="login_or_register_string">
-        <a href="login_page.html">登陆</a> ， <a href="login_page.html">注册</a>
-        <!--<a href="page/personal/personal_info.html" class="user_name_a">这是一个用户名这是一个用户名这是一个用户名</a>-->
-    </span>
-</header>
+<#include "head.ftl">
 <div class="short_nav_show">
     <ul>
         <li><a href="../index.html">首页</a></li>
@@ -53,14 +42,14 @@
     </ul>
 </nav>
 <div class="my_type_div">
-    <ul>
+    <#--<ul>
         <li class="type_1">数码科技</li>
         <li class="type_2">影音家电</li>
         <li class="type_3">鞋服配饰</li>
         <li class="type_4">运动代步</li>
         <li class="type_5">书籍文具</li>
         <li class="type_6">其他</li>
-    </ul>
+    </ul>-->
 </div>
 <div class="particular_type_div" onmouseleave="hideParticular()">
     <div class="one_part">
@@ -92,7 +81,6 @@
 <div class="temp_content" onmousedown="hideParticular()">
     <!--注意需要加一个br，不然会在同一行显示-->
     <div class="product_content_div" id="content">
-
     </div>
 
     <input type="hidden" id="pageNum" name="pageNum" value="1"/>
@@ -127,12 +115,12 @@
 </script>
 
 <!-- 编写分页模板 -->
-<script type="template" id="pageTemplate">
+<#--<script type="template" id="pageTemplate">
     {{ if(it.hasPreviousPage){ }}
     <a class="pagination_lt" href="javascript:ajax_get_table('{{=it.prePage}}');" style="text-decoration: none"><</a>
     {{ } }}
 
-        {{ for(var i = 1; i <= it.navigatepageNums.length; i++){ }}
+        {{ for(var i = 1; i <= it.pages; i++){ }}
         <ul>
         <li
                 {{ if(i == it.pageNum){ }}
@@ -142,11 +130,10 @@
         </li>
         </ul>
         {{ } }}
-
     {{ if(it.hasNextPage){ }}
     <a class="pagination_gt" href="javascript:ajax_get_table('{{=it.nextPage}}');" style="text-decoration: none">></a>
     {{ } }}
-</script>
+</script>-->
 
 
 <!-- 编写模板 -->
@@ -154,8 +141,7 @@
 
     {{ for(var i = 0; i < it.length; i++){ }}
     <li class="cat_item">
-        <h4 class="cat_tit"><a href="#" class="cat_tit_link">{{=it[i].name}}</a><span
-                    class="s_arrow">></span></h4>
+        <h4 class="cat_tit"><a href="#" class="cat_tit_link">{{=it[i].name}}</a></h4>
         <div class="cat_cont">
             <div class="cat_cont_lft">
                 {{ for(var j = 0; j < it[i].childrenList.length; j++){ }}
@@ -180,7 +166,11 @@
 
     $(document).ready(function () {
         // ajax 加载商品列表
-        ajax_get_table(1);
+        var page = $("#pageNum").val();
+        ajax_get_table(page);
+
+        //获取商品分类
+        selectKindsList();
     });
     //ajax 抓取页面 page 为当前第几页
     function ajax_get_table(page) {
@@ -190,7 +180,7 @@
             data: {
                 name: $(".nav_search_input").val(),
                 pageNum: page,
-                pageSize: 6
+                pageSize: $("#pageSize").val()
             },
             dataType: "JSON",
             success: function (result) {
@@ -203,10 +193,12 @@
                         //填充数据
                         $("#content").html(goodsTemp(result.pageInfo.list));
 
-                        //获取分页模板
+                        /*//获取分页模板
                         var pageTemp = doT.template($("#pageTemplate").text());
                         //填充数据
-                        $(".pagination_div").html(pageTemp(result.pageInfo));
+                        $(".pagination_div").html(pageTemp(result.pageInfo));*/
+
+                        pageInfoBar(result.pageInfo,"pagination_div")
 
                     } else {
                         layer.msg("该分类或品牌暂无商品信息！");
@@ -220,17 +212,97 @@
             }
         });
     }
+    
+    function selectKindsList() {
+        $.ajax({
+            url: "${ctx}/shopInformation/kinds",
+            type: "GET",
+            dataType: "JSON",
+            success: function (result) {
+                var result = JSON.parse(result);
+                if (result.length > 0) {
+                    // 调用模板
+                    var templ = doT.template($("#goodsKindsTemplate").text());
+                    // 填充内容
+                    $(".my_type_div").html(templ(result));
+                    /* ----------鼠标移入移出事件---begin------- */
+                    $('.cat_item').mousemove(function () {
+                        $(this).addClass('cat_item_on');
+                    });
+                    $('.cat_item').mouseleave(function () {
+                        $(this).removeClass('cat_item_on');
+                    });
+                    /* ----------鼠标移入移出事件-----end------- */
+                } else {
+                    layer.msg("亲，系统正在升级中，请稍后再试！");
+                }
+            },
+            error: function (result) {
+                console.log(result);
+                layer.msg("亲，系统正在升级中，请稍后再试！");
+            }
+        });
+    }
 
-/*function getpageInfo(pageInfo) {
-    $(".pagination_div").html("");
-    var str='<a class="pagination_lt" href="javascript:ajax_get_table('+pageInfo.pageNum+');" style="text-decoration: none"><</a>';
-        for(var i = 1; i <= pageInfo.pages; i++){
-            str+='<ul><li><a href="javascript:ajax_get_table('+i+');" style="text-decoration: none">'+i+'</a></li></ul>'
+
+    function pageInfoBar(pageInfo, barDivId) {
+        var barDiv = $("." + barDivId);
+        /*var context = "<span>当前页：" + pageInfo.pageNum + "&nbsp;总页数："
+            + pageInfo.pages + "&nbsp;&nbsp;总记录数："+pageInfo.total+"</span>";*/
+        var context = "<div class='query-content-page-btn'><ul>";
+        if (pageInfo.pageNum > 1) {
+            context += "<li class='prev-next' onclick=prePage('"
+                + pageInfo.prePage + "')><</li>";
         }
-        str +='<a class="pagination_gt" href="javascript:ajax_get_table('+pageInfo.pageNum+');" style="text-decoration: none">></a>';
-    $(".pagination_div").html(str);
-}*/
+        for (var i = 0; i < pageInfo.navigatepageNums.length; i++) {
+            if (pageInfo.pageNum == pageInfo.navigatepageNums[i]) {
+                context += "<li class='current_page' onclick=numPage('"
+                    + pageInfo.navigatepageNums[i]
+                    + "')>"
+                    + pageInfo.navigatepageNums[i] + "</li>"
+            } else {
+                context += "<li onclick=numPage('"
+                    + pageInfo.navigatepageNums[i] + "')>"
+                    + pageInfo.navigatepageNums[i] + "</li>"
+            }
 
+        }
+
+        if (pageInfo.pageNum < pageInfo.pages) {
+            context += "<li class='bus-border-right prev-next' onclick=nextPage('"
+                + pageInfo.nextPage + "')>></li>";
+        }
+        context += "</ul></div>";
+        barDiv.html(context);
+    }
+
+    // 下一页
+    function nextPage() {
+        // 获取当前页的值 加一 然后重新赋值给当前页
+        var page = parseInt($("#pageNum").val()) + 1;
+        $("#pageNum").val(page);
+        // 调用搜索函数
+        ajax_get_table(page);
+    }
+
+    //上一页
+    function prePage() {
+        // 获取当前页的值 减一 然后重新赋值给当前页
+        var page = parseInt($("#pageNum").val()) - 1;
+        $("#pageNum").val(page);
+        // 调用搜索函数
+        ajax_get_table(page);
+    }
+
+
+    // 第几页
+    function numPage(num) {
+        // 获取点击的按钮值 然后重新赋值给当前页
+        $("#pageNum").val(num);
+
+        // 调用搜索函数
+        ajax_get_table(num);
+    }
 </script>
 
 </body>

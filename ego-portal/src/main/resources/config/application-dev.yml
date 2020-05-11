@@ -64,7 +64,7 @@ spring:
   redis:
     timeout: 10000ms                        # 连接超时时间
     host: 193.112.109.181                   # Redis服务器地址
-    port: 6379                             # Redis服务器端口
+    port: 6378                             # Redis服务器端口
     database: 0                             # 选择哪个库，默认0库
     lettuce:
       pool:
@@ -92,6 +92,7 @@ spring:
       base-packages: com.ego.portal
 
 
+
   # MyBatis
 mybatis:
   # 配置 MyBatis数据返回类型别名(默认别名是类名)
@@ -113,3 +114,7 @@ management:
 user.ticket: user:userTicket
 # ego-order 系统 url
 ego.order.url: http://localhost:9092/ego-order/
+
+# Redis Key
+# 商品分类列表 Key
+goods.category.list.key: goods:category:list:goodsCategoryList
