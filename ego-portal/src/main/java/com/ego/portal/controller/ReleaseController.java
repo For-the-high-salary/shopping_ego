@@ -11,10 +11,12 @@ import com.ego.portal.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -29,7 +31,14 @@ public class ReleaseController {
      * @return
      */
     @RequestMapping("RIndex")
-    public String index(Model model){
+    public String index(Model model, HttpServletRequest request){
+        String id = request.getParameter("id");
+        System.out.println(id);
+        if(!StringUtils.isEmpty(id)){
+            ShopInformation shops = shopService.selectById(id);
+            model.addAttribute("Aid",id);
+            model.addAttribute("shops",shops);
+        }
         //查询顶级分类信息
         List<AllKinds> allKinds = allKindsService.selectTopList();
         model.addAttribute("gcList",allKinds);
@@ -58,8 +67,9 @@ public class ReleaseController {
      */
     @RequestMapping("save")
     @ResponseBody
-    public BaseResult save(ShopInformation shopInformation){
-        return  shopService.save(shopInformation);
+    public BaseResult save(ShopInformation shopInformation,HttpServletRequest request){
+        String aid = request.getParameter("AId");
+        return  shopService.save(shopInformation,aid);
     }
 
 }

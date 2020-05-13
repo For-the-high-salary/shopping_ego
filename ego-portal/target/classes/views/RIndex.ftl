@@ -10,12 +10,15 @@
     <link href="${ctx}/css/product/publish_product.css" rel="stylesheet">
     <script src="${ctx}/js/jquery-3.4.1.js"></script>
     <script src="${ctx}/js/home/header_model_js.js"></script>
+    <!-- 图片上传 -->
     <link rel="stylesheet" href="${ctx}/css/fileinput.min.css"/>
     <script type="text/javascript" src="${ctx}/js/fileinput.js"></script>
-    <!-- 对中文的支持 -->
     <script type="text/javascript" src="${ctx}/js/fileinput_locale_zh.js"></script>
-    <script src="${ctx}/bootstrap/js/bootstrap.min.js"></script>
-    <link href="${ctx}/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<#--    <script src="${ctx}/bootstrap/js/bootstrap.min.js"></script>-->
+<#--    <link href="${ctx}/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>-->
+    <!-- 引入 doT.js -->
+    <script type="text/javascript" src="${ctx}/js/doT.min.js"></script>
+    <script src="${ctx}/js/layer/layer-min.js"></script>
 </head>
 <body>
 <header>
@@ -58,12 +61,23 @@
     <div class="publish_product_div">
         <!--表单 --->
         <form id="category_form" method="post">
+            <#--储存当前商品得id-->
+            <#if Aid??>
+                <input id="Aid" type="hidden" value="${Aid}">
+                <input type="hidden" value="">
+            </#if>
+
             <div class="publish_one_par">
                 <div class="publish_title">
                     <h3>商品名</h3>
                 </div>
                 <div class="publish_content">
-                    <input type="text" class="title_input" name="name" required>
+                    <#if (shops.name)??>
+                        <input type="text" class="title_input" name="name" required value="${shops.name}">
+                        <#else>
+                        <input type="text" class="title_input" name="name" required>
+                    </#if>
+
                 </div>
             </div>
             <div class="publish_one_par">
@@ -72,14 +86,91 @@
                 </div>
                 <div class="publish_content">
                     <select class="choose_chengse" name="level">
-                        <option value="3">三成</option>
-                        <option value="4">四成</option>
-                        <option value="5">五成</option>
-                        <option value="6">六成</option>
-                        <option value="7" selected >七成</option>
-                        <option value="8">八成</option>
-                        <option value="9">九成</option>
-                        <option value="10">全新</option>
+                        <#if (shops.level)??>
+                            <#if shops.level==1>
+                                <option value="3" selected >三成</option>
+                                <option value="4">四成</option>
+                                <option value="5">五成</option>
+                                <option value="6">六成</option>
+                                <option value="7" >七成</option>
+                                <option value="8">八成</option>
+                                <option value="9">九成</option>
+                                <option value="10">全新</option>
+                                <#elseif shops.level==4>
+                                    <option value="3">三成</option>
+                                    <option value="4"selected>四成</option>
+                                    <option value="5">五成</option>
+                                    <option value="6">六成</option>
+                                    <option value="7" >七成</option>
+                                    <option value="8">八成</option>
+                                    <option value="9">九成</option>
+                                    <option value="10">全新</option>
+                                <#elseif shops.level==5>
+                                <option value="3">三成</option>
+                                <option value="4">四成</option>
+                                <option value="5"selected>五成</option>
+                                <option value="6">六成</option>
+                                <option value="7" >七成</option>
+                                <option value="8">八成</option>
+                                <option value="9">九成</option>
+                                <option value="10">全新</option>
+                                <#elseif shops.level==6>
+                                <option value="3">三成</option>
+                                <option value="4">四成</option>
+                                <option value="5">五成</option>
+                                <option value="6" selected>六成</option>
+                                <option value="7" >七成</option>
+                                <option value="8">八成</option>
+                                <option value="9">九成</option>
+                                <option value="10">全新</option>
+                                <#elseif shops.level==7>
+                                <option value="3">三成</option>
+                                <option value="4">四成</option>
+                                <option value="5">五成</option>
+                                <option value="6" >六成</option>
+                                <option value="7" selected>七成</option>
+                                <option value="8">八成</option>
+                                <option value="9">九成</option>
+                                <option value="10">全新</option>
+                            <#elseif shops.level==8>
+                                <option value="3">三成</option>
+                                <option value="4">四成</option>
+                                <option value="5">五成</option>
+                                <option value="6" >六成</option>
+                                <option value="7" >七成</option>
+                                <option value="8" selected>八成</option>
+                                <option value="9">九成</option>
+                                <option value="10">全新</option>
+                            <#elseif shops.level==9>
+                                <option value="3">三成</option>
+                                <option value="4">四成</option>
+                                <option value="5">五成</option>
+                                <option value="6" >六成</option>
+                                <option value="7" >七成</option>
+                                <option value="8" >八成</option>
+                                <option value="9" selected>九成</option>
+                                <option value="10">全新</option>
+                            <#elseif shops.level==10>
+                                <option value="3">三成</option>
+                                <option value="4">四成</option>
+                                <option value="5">五成</option>
+                                <option value="6" >六成</option>
+                                <option value="7" >七成</option>
+                                <option value="8" >八成</option>
+                                <option value="9" >九成</option>
+                                <option value="10" selected>全新</option>
+                            </#if>
+
+                        <#else>
+                            <option value="3">三成</option>
+                            <option value="4">四成</option>
+                            <option value="5">五成</option>
+                            <option value="6">六成</option>
+                            <option value="7" selected >七成</option>
+                            <option value="8">八成</option>
+                            <option value="9">九成</option>
+                            <option value="10">全新</option>
+                        </#if>
                     </select>
                 </div>
             </div>
@@ -88,7 +179,12 @@
                     <h3>单价</h3>
                 </div>
                 <div class="publish_content cost_content">
-                    <input type="text" class="cost_input" name="price" required><span>  RMB(.00)</span>
+                    <#if (shops.price)??>
+                        <input type="text" class="cost_input" name="price" value="${shops.price}" required><span>  RMB(.00)</span>
+                        <#else >
+                        <input type="text" class="cost_input" name="price" required><span>  RMB(.00)</span>
+                    </#if>
+
                 </div>
             </div>
             <div class="publish_one_par">
@@ -96,7 +192,12 @@
                     <h3>数量</h3>
                 </div>
                 <div class="publish_content">
-                    <input type="text" class="count_input" name="quantity" required>
+                    <#if (shops.quantity)??>
+                        <input type="text" class="count_input" name="quantity" value="${shops.quantity}" required>
+                        <#else >
+                            <input type="text" class="count_input" name="quantity" required>
+                    </#if>
+
                 </div>
             </div>
             <div class="publish_one_par">
@@ -104,8 +205,14 @@
                     <h3>详情</h3>
                 </div>
                 <div class="publish_content">
-                    <textarea class="detail_textarea" maxlength="122"
-                              placeholder="留下联系方式,方便买家联系" name="remark" required></textarea>
+                    <#if (shops.remark)??>
+                        <textarea class="detail_textarea" maxlength="122"
+                                   name="remark" required>${shops.remark}</textarea>
+                        <#else >
+                        <textarea class="detail_textarea" maxlength="122"
+                                  placeholder="留下联系方式,方便买家联系" name="remark" required></textarea>
+                    </#if>
+
                 </div>
             </div>
             <div class="publish_one_par">
@@ -131,11 +238,11 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="publish_one_par">
                 <div class="publish_title">
                     <h3>图片</h3>
                 </div>
-                <input type="text" id="image" name="image"/>
+                <input type="hidden" id="image" name="image"/>
                 <form enctype="multipart/form-data">
                     <input id="file-goods-category" class="file" name="file"
                            type="file"
@@ -163,9 +270,16 @@
      * hiddenId:隐藏域id
      */
     function ajaxSubmit() {
+        var Aid=$("#Aid").val();
+        var url=null;
+        if(Aid!=null){
+            url="${ctx}/release/save?AId="+Aid;
+        }else{
+            url="${ctx}/release/save"
+        }
         $.ajax({
             type: "POST",
-            url: "${ctx}/release/save",
+            url:url,
             data: $("#category_form").serialize(),// 你的formid
             dataType: "JSON",
             error: function (request) {
@@ -174,9 +288,14 @@
             success: function (result) {
                 console.log(result)
                 if (200 == result.code) {
-                    alert("保存成功");
+                    layer.alert("保存成功");
+                    //清空表单信息
+                    $("#category_form")[0].reset();
+                    //重定向到发布商品页面
+                    window.location.href="${ctx}/issue/index";
+
                 } else {
-                    alert("保存失败");
+                    layer.alert("保存失败");
                 }
             }
         });

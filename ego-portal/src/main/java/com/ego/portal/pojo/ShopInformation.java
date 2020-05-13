@@ -10,6 +10,11 @@ import java.util.Date;
  * @since 1.0.0
  */
 public class ShopInformation implements Serializable {
+
+    /**
+     * 等级名称
+     */
+    private String kind;
     /**
      * 商品id
      */
@@ -80,10 +85,19 @@ public class ShopInformation implements Serializable {
      */
     private String thumbnails;
 
+
     /**
      * shopinformation
      */
     private static final long serialVersionUID = 1L;
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
 
     public Integer getId() {
         return id;
